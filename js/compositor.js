@@ -11,32 +11,27 @@ export default class compositor {
     this.ctx = this.canvas.getContext('2d')
     this.skyColors = skyColors
     this.stars = []
-    this.canvas.addEventListener('mousemove', ent => this.print(ent))
+    this.canvas.addEventListener('mousemove', ent => this.checkCollision(ent.x, ent.y))
   }
 
-  print (ent) {
-    for (let star of this.stars) {
-      this.checkCollision(star, ent.x, ent.y)
-    }
-  }
-
-  checkCollision (star, x, y) {
+  checkCollision (x, y) {
     let checkX, checkY, collisionCheck,
     start, end
 
-    start = star.hitBox.startPoint
-    end = star.hitBox.endPoint
-
-    checkX = false
-    checkY = false
-    collisionCheck = false
-
-    if (x > start.x && x < end.x) {checkX = true}
-    if (y > start.y && y < end.y) {checkY = true}
-    if (checkX && checkY) {collisionCheck = true}
-    if (collisionCheck == true) {star.isShining = true}
+    for (let star of this.stars) {
+      start = star.hitBox.startPoint
+      end = star.hitBox.endPoint
+      
+      checkX = false
+      checkY = false
+      collisionCheck = false
+  
+      if (x > start.x && x < end.x) {checkX = true}
+      if (y > start.y && y < end.y) {checkY = true}
+      if (checkX && checkY) {collisionCheck = true}
+      if (collisionCheck == true) {star.isShining = true}
+    }
   }
-
   
   resizeCanvas () {
     this.canvas.width = this.container.clientWidth
