@@ -1,7 +1,8 @@
 import star from "./star.js"
 
 export default class compositor {
-  constructor (container, skyColors) {
+  constructor (container, skyColors, animator) {
+    this.animator = animator
     this.container = document.querySelector(container)
     this.canvas = document.createElement('canvas')
     this.container.appendChild(this.canvas)
@@ -10,8 +11,33 @@ export default class compositor {
     this.ctx = this.canvas.getContext('2d')
     this.skyColors = skyColors
     this.stars = []
+    this.canvas.addEventListener('mousemove', ent => this.print(ent))
   }
 
+  print (ent) {
+    for (let star of this.stars) {
+      this.checkCollision(star, ent.x, ent.y)
+    }
+  }
+
+  checkCollision (star, x, y) {
+    let checkX, checkY, collisionCheck,
+    start, end
+
+    start = star.hitBox.startPoint
+    end = star.hitBox.endPoint
+
+    checkX = false
+    checkY = false
+    collisionCheck = false
+
+    if (x > start.x && x < end.x) {checkX = true}
+    if (y > start.y && y < end.y) {checkY = true}
+    if (checkX && checkY) {collisionCheck = true}
+    if (collisionCheck == true) {star.isShining = true}
+  }
+
+  
   resizeCanvas () {
     this.canvas.width = this.container.clientWidth
     this.canvas.height = this.container.clientHeight
@@ -65,7 +91,6 @@ export default class compositor {
     this.ctx.closePath()
   }
 
-
   fillStar (star) {
     let gradient
 
@@ -81,10 +106,10 @@ export default class compositor {
     return Math.floor(Math.random() * (to - from + 1) + from)
   }
 
-  moveAnimation (vDelta = 0.02) {
+  moveStars (vDelta = 0.02) {
     for (let star of this.stars) {
       star.x -= star.velocity * vDelta
-
+  
       if (star.x < 0) {
         star.x = this.canvas.width
         star.y = this.getRandomNumber(0, this.canvas.height)
@@ -92,10 +117,13 @@ export default class compositor {
       }
     }
 
+    this.redraw()
+    window.requestAnimationFrame(() => this.moveStars())
+  }
+
+  redraw () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.fillSky()
     for (let star of this.stars) {this.drawStar(star)}
-
-    window.requestAnimationFrame(() => this.moveAnimation(vDelta))
   }
 }
