@@ -17,4 +17,11 @@ export default class star {
 
     this.isShining = false
   }
+
+  reCalcHitBox () {
+    this.hitBox = {
+      startPoint: {x: this.x - 10, y: this.y - 10},
+      endPoint: {x: this.x + 10, y: this.y + 10},
+    }
+  }
 }

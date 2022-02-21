@@ -40,10 +40,7 @@ export default class animator {
         star.origin = star.radius
       }
 
-      star.hitBox = {
-        startPoint: {x: star.x - 10, y: star.y - 10},
-        endPoint: {x: star.x + 10, y: star.y + 10},
-      }
+      star.reCalcHitBox()
     }
 
     this.sky.redraw()
