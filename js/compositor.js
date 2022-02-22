@@ -1,10 +1,9 @@
-import star from "./star.js"
-
 export default class compositor {
-  constructor (container, skyColors) {
+  constructor (star, container, skyColors) {
     this.container = document.querySelector(container)
     this.canvas = document.createElement('canvas')
     this.container.appendChild(this.canvas)
+    this.starClass = star
     this.resizeCanvas()
     
     this.ctx = this.canvas.getContext('2d')
@@ -73,7 +72,7 @@ export default class compositor {
       tempVelocity = this.getRandomNumber(1, 10)
       curRegion += widthDelta
 
-      this.stars.push(new star (tempX, tempY, tempRadius, tempVelocity))
+      this.stars.push(new this.starClass (tempX, tempY, tempRadius, tempVelocity))
     }
 
     for (let star of this.stars) {this.drawStar(star)}

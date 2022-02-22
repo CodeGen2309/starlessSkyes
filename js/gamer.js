@@ -1,8 +1,12 @@
 export default class gamer {
   constructor (sky) {
-    this.interface = null
-    this.initIcon = null
-    this.sky = sky
+    this.interface
+    this.initIcon
+
+    this.gameMenu
+    this.playButton
+    this.optButton
+    this.quitButton
   }
 
   setStartIcon () {
@@ -17,16 +21,6 @@ export default class gamer {
     container.classList.add('gInit')
     container.append(playIcon)
 
-    container.addEventListener('click', () => {
-      container.classList.add('gInit_inactive')
-      this.interface = this.initInterface()
-      
-      setTimeout(() => {
-      this.interface.classList.add('gMenu_active')
-        document.body.removeChild(container)
-      }, 300)
-    })
-
     document.body.append(container)
     this.initIcon = container
   }
@@ -38,16 +32,12 @@ export default class gamer {
     playButton = document.createElement('li')
     playButton.classList.add('gMenu__button')
     playButton.innerText = 'PLAY'
-    playButton.addEventListener('click', () => {
-      this.sky.initSpaceShip()
-    })
 
     optButton = playButton.cloneNode()
     optButton.innerText = 'OPTIONS'
 
     quitButton = playButton.cloneNode()
     quitButton.innerText = 'QUIT'
-    quitButton.addEventListener('click', () => this.detachInterface())
 
     container = document.createElement('ul')
     container.classList.add('gMenu')
@@ -56,18 +46,26 @@ export default class gamer {
     container.append(optButton)
     container.append(quitButton)
 
+    this.gameMenu = container
+    this.playButton = playButton
+    this.optButton = optButton
+    this.quitButton = quitButton
+
     document.body.append(container)
-    return container
+    setTimeout(() => {
+      this.gameMenu.classList.add('gMenu_active')
+    }, 100);
+
+    this.gameMenu = container
   }
 
   detachInterface () {
     this.setStartIcon()
-    this.interface.classList.remove('gMenu_active')
-    this.sky.spaceShip = null
-    this.sky.canvas.style = ''
+
+    this.gameMenu.classList.remove('gMenu_active')
     
     setTimeout(() => {
-      document.body.removeChild(this.interface)
+      document.body.removeChild(this.gameMenu)
     }, 300)
   }
 }

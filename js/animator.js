@@ -1,51 +1,34 @@
 export default class animator {
-  constructor (sky) {this.sky = sky}
-
   getRandomNumber (from=1, to=10) {
     return Math.floor(Math.random() * (to - from + 1) + from)
   }
 
-  shineAnimation (minRadius=1, shineDelta=0.08) {
-    for (let star of this.sky.stars) {
-      if (star.radius <= minRadius) {star.shineFactor = 1}
-      
-      // if (star.isShining) {
-      //   star.radius += star.shineFactor*shineDelta
-      // }
+  shineAnimation (star, minRadius=1, shineDelta=0.08) {
+    if (star.radius <= minRadius) {star.shineFactor = 1}
+    
+    // if (star.isShining) {
+    //   star.radius += star.shineFactor*shineDelta
+    // }
 
-      star.radius += star.shineFactor*shineDelta
-
-      if (star.radius >= star.origin) {
-        star.isShining = false
-        star.shineFactor = -1
-      }
-      if (star.radius < 0) {star.radius = 0}
+    star.radius += star.shineFactor*shineDelta
+    if (star.radius >= star.origin) {
+      star.isShining = false
+      star.shineFactor = -1
     }
 
-    this.sky.redraw()
-    window.requestAnimationFrame(() => this.shineAnimation(minRadius, shineDelta))
+    if (star.radius < 0) {star.radius = 0}
   }
 
-  moveAnimation (vDelta = 0.02) {
-    let cWidth, cHeight
+  moveAnimation (cWidth, cHeight, star, vDelta = 0.02) {
+    star.x -= star.velocity * vDelta
 
-    cWidth = this.sky.canvas.width
-    cHeight = this.sky.canvas.height
-
-    for (let star of this.sky.stars) {
-      star.x -= star.velocity * vDelta
-
-      if (star.x < 0) {
-        star.x = cWidth
-        star.y = this.getRandomNumber(0, cHeight)
-        star.radius = this.getRandomNumber(5, 15)
-        star.origin = star.radius
-      }
-
-      star.reCalcHitBox()
+    if (star.x < 0) {
+      star.x = cWidth
+      star.y = this.getRandomNumber(0, cHeight)
+      star.radius = this.getRandomNumber(5, 15)
+      star.origin = star.radius
     }
 
-    this.sky.redraw()
-    window.requestAnimationFrame(() => this.moveAnimation(vDelta))
+    star.reCalcHitBox()
   }
 }
