@@ -61,15 +61,32 @@ export default class manager {
     options = this.game.optButton
     quit = this.game.quitButton
 
-    quit.addEventListener('click', () => {
-      this.game.gameMenu.classList.remove('gMenu_active')
+    quit.addEventListener('click', () => this.detachInterface())
+    play.addEventListener('click', () => this.startGame())
+  }
 
-      setTimeout(() => {
-        document.body.removeChild(this.game.gameMenu)
-        this.game.gameMenu = undefined
-        this.initGameIcon()        
-      }, 100);
+  detachInterface () {
+    this.game.gameMenu.classList.remove('gMenu_active')
 
+    if (this.sky.spaceShip != null) {
+      this.sky.spaceShip = null
+      this.sky.canvas.style = ''
+    }
+
+    setTimeout(() => {
+      document.body.removeChild(this.game.gameMenu)
+      this.game.gameMenu = undefined
+      this.initGameIcon()
+    }, 300);
+  }
+
+  startGame () {
+    this.sky.initSpaceShip()
+    this.sky.drawSpaceShip()
+
+    this.sky.canvas.addEventListener('mousemove', ent => {
+      this.sky.moveSpaceShip(ent.x, ent.y)
+      this.sky.redraw()
     })
   }
 }

@@ -58,14 +58,4 @@ export default class gamer {
 
     this.gameMenu = container
   }
-
-  detachInterface () {
-    this.setStartIcon()
-
-    this.gameMenu.classList.remove('gMenu_active')
-    
-    setTimeout(() => {
-      document.body.removeChild(this.gameMenu)
-    }, 300)
-  }
 }
