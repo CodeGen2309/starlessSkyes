@@ -1,8 +1,7 @@
 import star from "./star.js"
 
 export default class compositor {
-  constructor (container, skyColors, animator) {
-    this.animator = animator
+  constructor (container, skyColors) {
     this.container = document.querySelector(container)
     this.canvas = document.createElement('canvas')
     this.container.appendChild(this.canvas)
@@ -10,7 +9,9 @@ export default class compositor {
     
     this.ctx = this.canvas.getContext('2d')
     this.skyColors = skyColors
+    this.spaceShip = null
     this.stars = []
+
     this.canvas.addEventListener('mousemove', ent => this.checkCollision(ent.x, ent.y))
   }
 
@@ -18,6 +19,7 @@ export default class compositor {
     let checkX, checkY, collisionCheck,
     start, end
 
+    if (this.spaceShip != null) {this.moveSpaceShip(x, y)}
     for (let star of this.stars) {
       start = star.hitBox.startPoint
       end = star.hitBox.endPoint
@@ -101,6 +103,43 @@ export default class compositor {
     return Math.floor(Math.random() * (to - from + 1) + from)
   }
 
+  initSpaceShip () {
+    let spaceShip, hitbox, imgPath, imgItem
+
+    imgPath = '/sprites/spaceShip250.png'
+
+    imgItem = document.createElement('img')
+    imgItem.src = imgPath
+
+    hitbox = {
+      startPoint: [50, 50],
+      endPoint: [100, 100]
+    }
+
+    spaceShip = {
+      img: imgItem,
+      x: 100, y: 100,
+      hitbox: hitbox
+    }
+
+    this.canvas.style.cursor = 'none'
+    this.spaceShip = spaceShip
+  }
+
+  drawSpaceShip () {
+    let ship = this.spaceShip
+    this.ctx.drawImage(ship.img, ship.x, ship.y)
+  }
+
+  moveSpaceShip (x, y) {
+    let ship = this.spaceShip
+
+    ship.x = x - 25
+    ship.y = y - 25
+    ship.hitbox.startPoint = [ship.x - 25, ship.y - 25]
+    ship.hitbox.endPoint = [ship.x + 25, ship.y + 25]
+  }
+
   moveStars (vDelta = 0.02) {
     for (let star of this.stars) {
       star.x -= star.velocity * vDelta
@@ -119,6 +158,8 @@ export default class compositor {
   redraw () {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     this.fillSky()
+
     for (let star of this.stars) {this.drawStar(star)}
+    if (this.spaceShip != null) {this.drawSpaceShip()}
   }
 }

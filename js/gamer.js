@@ -1,7 +1,8 @@
 export default class gamer {
-  constructor () {
+  constructor (sky) {
     this.interface = null
     this.initIcon = null
+    this.sky = sky
   }
 
   setStartIcon () {
@@ -17,7 +18,7 @@ export default class gamer {
     container.append(playIcon)
 
     container.addEventListener('click', () => {
-      container.classList.add('gInit_incative')
+      container.classList.add('gInit_inactive')
       this.interface = this.initInterface()
       
       setTimeout(() => {
@@ -37,6 +38,9 @@ export default class gamer {
     playButton = document.createElement('li')
     playButton.classList.add('gMenu__button')
     playButton.innerText = 'PLAY'
+    playButton.addEventListener('click', () => {
+      this.sky.initSpaceShip()
+    })
 
     optButton = playButton.cloneNode()
     optButton.innerText = 'OPTIONS'
@@ -59,6 +63,8 @@ export default class gamer {
   detachInterface () {
     this.setStartIcon()
     this.interface.classList.remove('gMenu_active')
+    this.sky.spaceShip = null
+    this.sky.canvas.style = ''
     
     setTimeout(() => {
       document.body.removeChild(this.interface)

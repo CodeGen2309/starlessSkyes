@@ -13,9 +13,10 @@ sky = new compositor('.app', skyColors)
 sky.fillSky(skyColors)
 sky.lightUpTheStars(100)
 
+
 anim = new animator(sky)
 anim.moveAnimation()
-anim.shineAnimation(5, 0.3)
+anim.shineAnimation(5, 0.06)
 
-player = new gamer()
+player = new gamer(sky)
 player.setStartIcon()

@@ -9,9 +9,11 @@ export default class animator {
     for (let star of this.sky.stars) {
       if (star.radius <= minRadius) {star.shineFactor = 1}
       
-      if (star.isShining) {
-        star.radius += star.shineFactor*shineDelta
-      }
+      // if (star.isShining) {
+      //   star.radius += star.shineFactor*shineDelta
+      // }
+
+      star.radius += star.shineFactor*shineDelta
 
       if (star.radius >= star.origin) {
         star.isShining = false

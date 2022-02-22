@@ -17,7 +17,7 @@ body {padding: 0; margin: 0}
   transition: .3s;
 }
 
-.gInit_incative {opacity: 0}
+.gInit_inactive {opacity: 0}
 .gInit:hover {
   background: rgba(255, 255, 255, .5);
 }
