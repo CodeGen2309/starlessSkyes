@@ -1,6 +1,4 @@
-import star from './star.js'
-import animator from "./animator.js"
-import compositor from "./compositor.js"
+import scene from "./scene.js"
 import gamer from "./gamer.js"
 
 
@@ -11,12 +9,12 @@ export default class manager {
       '#0f0c29', '#000000',   
     ]
 
-    this.sky = new compositor (star, '.app',this.skyColors)
-    this.animation = new animator ()
+    this.sky = new scene ('.app',this.skyColors)
     this.game = new gamer()
 
     this.cWidth = this.sky.canvas.width
     this.cHeight = this.sky.canvas.height
+    this.gameIsRun = false
   }
 
   setComposition () {
@@ -26,67 +24,86 @@ export default class manager {
 
 
   animateSkyes () {
-    for  (let star of this.sky.stars) {
-      this.animation.moveAnimation(this.cWidth, this.cHeight, star)
-      this.animation.shineAnimation(star)
+    for (let star of this.sky.stars) {
+      star.move(this.cWidth, this.cHeight)
+      star.shine()
     }
 
     this.sky.redraw()
     window.requestAnimationFrame(() => this.animateSkyes())
   }
 
-  initGameIcon () {
-    this.game.setStartIcon()
-    
+
+  initGameInterfase () {
+    this.game.setInitIcon()
+    this.game.initGameMenu()
+
     this.game.initIcon.addEventListener('click', () => {
-      if (this.game.gameMenu != undefined) {return}
-      this.game.initInterface()
-      this.game.initIcon.classList.add('gInit_inactive')
-      this.initMenuButtons()
-      
-      setTimeout(() => {
-        this.game.initIcon.remove()
-        this.game.initIcon = undefined
-      }, 10);
+      this.game.showGameMenu()
+      this.game.hideInitIcon()
+
+      if (this.gameIsRun) {this.stopGame()}
+    })
+
+    this.handleMenuButtons()
+  
+    this.sky.canvas.addEventListener('mousemove', ent => {
+      if (this.sky.ship.isVisible) {
+        this.sky.ship.move(ent.x, ent.y)
+      }
     })
   }
 
 
-  initMenuButtons () {
+  handleMenuButtons () {
     let menu, play, options, quit
-    if (this.game.gameMenu == undefined) {return}
 
     menu = this.game.gameMenu
     play = this.game.playButton
     options = this.game.optButton
     quit = this.game.quitButton
 
-    quit.addEventListener('click', () => this.detachInterface())
-    play.addEventListener('click', () => this.startGame())
-  }
+    play.addEventListener('click', () => {
+      this.game.hideGameMenu()
+      this.game.showInitIcon()
+      this.startGame()
+    })
 
-  detachInterface () {
-    this.game.gameMenu.classList.remove('gMenu_active')
-
-    if (this.sky.spaceShip != null) {
-      this.sky.spaceShip = null
-      this.sky.canvas.style = ''
-    }
-
-    setTimeout(() => {
-      document.body.removeChild(this.game.gameMenu)
-      this.game.gameMenu = undefined
-      this.initGameIcon()
-    }, 300);
+    quit.addEventListener('click', () => {
+      this.game.hideGameMenu()
+      this.game.showInitIcon()
+    })
   }
 
   startGame () {
-    this.sky.initSpaceShip()
-    this.sky.drawSpaceShip()
+    this.sky.ship.isVisible = true
+    this.gameIsRun = true
+    this.sky.canvas.style.cursor = 'none'
+  }
 
-    this.sky.canvas.addEventListener('mousemove', ent => {
-      this.sky.moveSpaceShip(ent.x, ent.y)
-      this.sky.redraw()
-    })
+  stopGame () {
+    this.gameIsRun = false
+    this.sky.ship.isVisible = false
+    this.sky.canvas.style = ''
+  }
+
+  checkCollision (x, y) {
+    let checkX, checkY, collisionCheck,
+    start, end
+
+    if (this.spaceShip != null) {this.moveSpaceShip(x, y)}
+    for (let star of this.stars) {
+      start = star.hitBox.startPoint
+      end = star.hitBox.endPoint
+      
+      checkX = false
+      checkY = false
+      collisionCheck = false
+  
+      if (x > start.x && x < end.x) {checkX = true}
+      if (y > start.y && y < end.y) {checkY = true}
+      if (checkX && checkY) {collisionCheck = true}
+      if (collisionCheck == true) {star.isShining = true}
+    }
   }
 }

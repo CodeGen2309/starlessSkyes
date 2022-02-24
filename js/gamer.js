@@ -1,5 +1,5 @@
 export default class gamer {
-  constructor (sky) {
+  constructor () {
     this.interface
     this.initIcon
 
@@ -9,7 +9,7 @@ export default class gamer {
     this.quitButton
   }
 
-  setStartIcon () {
+  async setInitIcon () {
     let container, playIcon, iconPath
 
     iconPath = '../icons/play.png'
@@ -21,11 +21,30 @@ export default class gamer {
     container.classList.add('gInit')
     container.append(playIcon)
 
-    document.body.append(container)
     this.initIcon = container
+    this.showInitIcon()
   }
 
-  initInterface () {
+
+  showInitIcon () {
+    document.body.append(this.initIcon)
+
+    setTimeout(() => {
+      this.initIcon.classList.add('gInit_active')
+    }, 100)
+  }
+
+
+  hideInitIcon () {
+    this.initIcon.classList.remove('gInit_active')
+
+    setTimeout(() => {
+      document.body.removeChild(this.initIcon)
+    }, 100)
+  }
+
+
+  initGameMenu () {
     let container, playButton, optButton,
     quitButton
 
@@ -51,11 +70,23 @@ export default class gamer {
     this.optButton = optButton
     this.quitButton = quitButton
 
-    document.body.append(container)
+    this.gameMenu = container
+  }
+
+  showGameMenu () {
+    document.body.append(this.gameMenu)
+
     setTimeout(() => {
       this.gameMenu.classList.add('gMenu_active')
-    }, 100);
+    }, 100)
+  }
 
-    this.gameMenu = container
+
+  hideGameMenu () {
+    this.gameMenu.classList.remove('gMenu_active')
+
+    setTimeout(() => {
+      document.body.removeChild(this.gameMenu)
+    }, 100)
   }
 }

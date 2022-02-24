@@ -4,4 +4,4 @@ let manager = new Manager ()
 
 manager.setComposition()
 manager.animateSkyes()
-manager.initGameIcon()
+manager.initGameInterfase()
