@@ -48,8 +48,19 @@ export default class manager {
     this.handleMenuButtons()
   
     this.sky.canvas.addEventListener('mousemove', ent => {
-      if (this.sky.ship.isVisible) {
-        this.sky.ship.move(ent.x, ent.y)
+      let collision, ship
+
+      ship = this.sky.ship
+      ship.move(ent.x - 25, ent.y - 25)
+
+      if (!ship.isVisible) {return}
+      for (let star of this.sky.stars) {
+        collision = this.game.checkCollision(ship.x, ship.y, star)
+
+        if (collision) {
+          star.radius = 100
+          this.stopGame()
+        }
       }
     })
   }
@@ -85,25 +96,5 @@ export default class manager {
     this.gameIsRun = false
     this.sky.ship.isVisible = false
     this.sky.canvas.style = ''
-  }
-
-  checkCollision (x, y) {
-    let checkX, checkY, collisionCheck,
-    start, end
-
-    if (this.spaceShip != null) {this.moveSpaceShip(x, y)}
-    for (let star of this.stars) {
-      start = star.hitBox.startPoint
-      end = star.hitBox.endPoint
-      
-      checkX = false
-      checkY = false
-      collisionCheck = false
-  
-      if (x > start.x && x < end.x) {checkX = true}
-      if (y > start.y && y < end.y) {checkY = true}
-      if (checkX && checkY) {collisionCheck = true}
-      if (collisionCheck == true) {star.isShining = true}
-    }
   }
 }

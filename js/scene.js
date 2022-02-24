@@ -6,20 +6,22 @@ export default class scene {
     this.container = document.querySelector(container)
     this.canvas = document.createElement('canvas')
     this.container.appendChild(this.canvas)
-    this.resizeCanvas()
-
+    
     this.ctx = this.canvas.getContext('2d')
     this.skyColors = skyColors
     this.stars = []
-
+    
     this.starClass = star
     this.ship = new spaceShip(300, 300)
+    
+    this.resizeCanvas() 
   }
 
   
   resizeCanvas () {
     this.canvas.width = this.container.clientWidth
     this.canvas.height = this.container.clientHeight
+    this.redraw()
   }
 
 
