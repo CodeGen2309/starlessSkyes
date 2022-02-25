@@ -27,53 +27,49 @@ export default class manager {
 
 
   animateSkyes () {
-    for (let star of this.sky.stars) {
-      if (star.isMoving) {star.move(this.cWidth, this.cHeight, this.starSpeed)}
-      if (star.isShining) {star.shine()}
-      if (star.isBlowing) {star.blow()}
-    }
+    let starsSlowDown = !this.gameIsRun && this.starSpeed <= this.screenSpeed
 
+    for (let star of this.sky.stars) {this.animateStar(star)}
     if (this.gameIsRun) {this.starSpeed += this.gameVelocity}
-
-    if (!this.gameIsRun && this.starSpeed <=  this.screenSpeed) {
-      this.starSpeed -= this.gameVelocity * 5
-    }
+    if (starsSlowDown) {this.starSpeed -= this.gameVelocity * 10}
     
-
     this.sky.redraw()
     window.requestAnimationFrame(() => this.animateSkyes())
   }
 
+  animateStar (star) {
+    if (star.isMoving) {star.move(this.cWidth, this.cHeight, this.starSpeed)}
+    if (star.isShining) {star.shine()}
+    if (star.isBlowing) {star.blow()}
+  }
+
 
   initGameInterfase () {
+    let canvas, initIcon
+
     this.game.setInitIcon()
     this.game.initGameMenu()
-
-    this.game.initIcon.addEventListener('click', () => {
-      this.game.showGameMenu()
-      this.game.hideInitIcon()
-
-      if (this.gameIsRun) {this.stopGame()}
-    })
-
     this.handleMenuButtons()
-  
-    this.sky.canvas.addEventListener('mousemove', ent => {
-      let collision, ship
 
-      ship = this.sky.ship
-      ship.move(ent.x - 25, ent.y - 25)
+    canvas = this.sky.canvas
+    canvas.addEventListener('mousemove', ent => this.onMouseMove(ent))
 
-      if (!ship.isVisible) {return}
-      for (let star of this.sky.stars) {
-        collision = this.game.checkCollision(ship.x, ship.y, star)
+    initIcon = this.game.initIcon
+    initIcon.addEventListener('click', () => this.initIconClick())
+  }
 
-        if (collision) {
-          star.isBlowing = true
-          this.stopGame()
-        }
-      }
-    })
+  onMouseMove (ent) {
+    if (this.gameIsRun) {
+      this.sky.ship.move(ent.x - 25, ent.y - 25)
+      this.checkCollisions(ent.x, ent.y)
+    }
+  }
+
+
+  initIconClick () {
+    this.game.showGameMenu()
+    this.game.hideInitIcon()
+    if (this.gameIsRun) {this.stopGame()}
   }
 
 
@@ -107,5 +103,17 @@ export default class manager {
     this.gameIsRun = false
     this.sky.ship.isVisible = false
     this.sky.canvas.style = ''
+  }
+
+  checkCollisions (x, y) {
+    for (let star of this.sky.stars) {
+      let collision = this.game.checkCollision(x, y, star)
+
+      if (collision) {
+        star.isBlowing = true
+        this.stopGame()
+        return
+      }
+    }
   }
 }
