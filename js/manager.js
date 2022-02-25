@@ -14,6 +14,9 @@ export default class manager {
 
     this.cWidth = this.sky.canvas.width
     this.cHeight = this.sky.canvas.height
+    this.screenSpeed = 0.01
+    this.starSpeed = 0.01
+    this.gameVelocity = -0.0005
     this.gameIsRun = false
   }
 
@@ -25,9 +28,17 @@ export default class manager {
 
   animateSkyes () {
     for (let star of this.sky.stars) {
-      star.move(this.cWidth, this.cHeight)
-      star.shine()
+      if (star.isMoving) {star.move(this.cWidth, this.cHeight, this.starSpeed)}
+      if (star.isShining) {star.shine()}
+      if (star.isBlowing) {star.blow()}
     }
+
+    if (this.gameIsRun) {this.starSpeed += this.gameVelocity}
+
+    if (!this.gameIsRun && this.starSpeed <=  this.screenSpeed) {
+      this.starSpeed -= this.gameVelocity * 5
+    }
+    
 
     this.sky.redraw()
     window.requestAnimationFrame(() => this.animateSkyes())
@@ -58,7 +69,7 @@ export default class manager {
         collision = this.game.checkCollision(ship.x, ship.y, star)
 
         if (collision) {
-          star.radius = 100
+          star.isBlowing = true
           this.stopGame()
         }
       }
@@ -87,8 +98,8 @@ export default class manager {
   }
 
   startGame () {
-    this.sky.ship.isVisible = true
     this.gameIsRun = true
+    this.sky.ship.isVisible = true
     this.sky.canvas.style.cursor = 'none'
   }
 
