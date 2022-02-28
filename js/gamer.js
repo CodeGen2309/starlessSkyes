@@ -97,14 +97,9 @@ export default class gamer {
     start = star.hitBox.startPoint
     end = star.hitBox.endPoint
     
-    checkX = false
-    checkY = false
-    collisionCheck = false
-
-    if (x > start.x && x < end.x) {checkX = true}
-    if (y > start.y && y < end.y) {checkY = true}
-    if (checkX && checkY) {collisionCheck = true}
-
+    checkX = x > start.x && x < end.x
+    checkY = y > start.y && y < end.y
+    collisionCheck = checkX && checkY
     return collisionCheck
   }
 }

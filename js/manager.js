@@ -58,6 +58,7 @@ export default class manager {
     initIcon.addEventListener('click', () => this.initIconClick())
   }
 
+
   onMouseMove (ent) {
     if (this.gameIsRun) {
       this.sky.ship.move(ent.x - 25, ent.y - 25)
